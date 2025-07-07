@@ -11,29 +11,29 @@ export class ModelService {
       }
     })
 
-    const response = await apiClient.get<ModelListResponse>(`/admin-models?${queryParams}`)
+    const response = await apiClient.get<any>(`/admin/models?${queryParams}`)
     return response.success ? response.data || { models: [], pagination: { total: 0, limit: 50, offset: 0, hasMore: false } } : { models: [], pagination: { total: 0, limit: 50, offset: 0, hasMore: false } }
   }
 
   async getPendingModels(limit: number = 50, offset: number = 0): Promise<ModelListResponse> {
-    const response = await apiClient.get<ModelListResponse>(`/admin-models?action=pending&limit=${limit}&offset=${offset}`)
+    const response = await apiClient.get<any>(`/admin/models?action=pending&limit=${limit}&offset=${offset}`)
     return response.success ? response.data || { models: [], pagination: { total: 0, limit, offset, hasMore: false } } : { models: [], pagination: { total: 0, limit, offset, hasMore: false } }
   }
 
   async getModelById(modelId: string): Promise<ModelDetailResponse | null> {
-    const response = await apiClient.get<ModelDetailResponse>(`/admin-models?id=${modelId}`)
+    const response = await apiClient.get<any>(`/admin/models?id=${modelId}`)
     return response.success ? response.data || null : null
   }
 
   async approveModel(modelId: string): Promise<boolean> {
-    const response = await apiClient.put(`/admin-models?id=${modelId}`, { 
+    const response = await apiClient.put(`/admin/models?id=${modelId}`, { 
       action: 'approve' 
     })
     return response.success
   }
 
   async rejectModel(modelId: string, reason: string): Promise<boolean> {
-    const response = await apiClient.put(`/admin-models?id=${modelId}`, { 
+    const response = await apiClient.put(`/admin/models?id=${modelId}`, { 
       action: 'reject',
       data: { reason }
     })
@@ -41,7 +41,7 @@ export class ModelService {
   }
 
   async updateModelAvailability(modelId: string, availability: boolean): Promise<boolean> {
-    const response = await apiClient.put(`/admin-models?id=${modelId}`, { 
+    const response = await apiClient.put(`/admin/models?id=${modelId}`, { 
       action: 'set_availability',
       data: { availability }
     })
@@ -49,7 +49,7 @@ export class ModelService {
   }
 
   async updateModelPrice(modelId: string, price: number): Promise<boolean> {
-    const response = await apiClient.put(`/admin-models?id=${modelId}`, { 
+    const response = await apiClient.put(`/admin/models?id=${modelId}`, { 
       action: 'update_price',
       data: { price }
     })
@@ -57,12 +57,12 @@ export class ModelService {
   }
 
   async deactivateModel(modelId: string): Promise<boolean> {
-    const response = await apiClient.delete(`/admin-models?id=${modelId}`)
+    const response = await apiClient.delete(`/admin/models?id=${modelId}`)
     return response.success
   }
 
   async bulkApprove(modelIds: string[]): Promise<BulkOperationResponse> {
-    const response = await apiClient.post<BulkOperationResponse>('/admin-models', {
+    const response = await apiClient.post<BulkOperationResponse>('/admin/models', {
       action: 'approve',
       modelIds
     })
@@ -70,7 +70,7 @@ export class ModelService {
   }
 
   async bulkReject(modelIds: string[], reason: string): Promise<BulkOperationResponse> {
-    const response = await apiClient.post<BulkOperationResponse>('/admin-models', {
+    const response = await apiClient.post<BulkOperationResponse>('/admin/models', {
       action: 'reject',
       modelIds,
       data: { reason }
@@ -79,7 +79,7 @@ export class ModelService {
   }
 
   async bulkSetAvailability(modelIds: string[], availability: boolean): Promise<BulkOperationResponse> {
-    const response = await apiClient.post<BulkOperationResponse>('/admin-models', {
+    const response = await apiClient.post<BulkOperationResponse>('/admin/models', {
       action: 'set_availability',
       modelIds,
       data: { availability }
@@ -88,7 +88,7 @@ export class ModelService {
   }
 
   async bulkToggleAvailability(modelIds: string[]): Promise<BulkOperationResponse> {
-    const response = await apiClient.post<BulkOperationResponse>('/admin-models', {
+    const response = await apiClient.post<BulkOperationResponse>('/admin/models', {
       action: 'toggle_availability',
       modelIds
     })
@@ -96,7 +96,7 @@ export class ModelService {
   }
 
   async getAnalytics(period: number = 30): Promise<ModelAnalytics | null> {
-    const response = await apiClient.get<ModelAnalytics>(`/admin-models?action=analytics&period=${period}`)
+    const response = await apiClient.get<any>(`/admin/models?action=analytics&period=${period}`)
     return response.success ? response.data || null : null
   }
 }

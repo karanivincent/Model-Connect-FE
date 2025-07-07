@@ -145,7 +145,7 @@
         <div class="text-xs text-gray-600">Contact Price</div>
       </div>
       <div class="bg-gray-50 rounded p-2">
-        <div class="text-lg font-semibold text-primary-600">{model.metrics.salesCount}</div>
+        <div class="text-lg font-semibold text-primary-600">{model.metrics?.salesCount || 0}</div>
         <div class="text-xs text-gray-600">Sales</div>
       </div>
     </div>

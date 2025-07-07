@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { ModelService } from '../services'
-  import ModelFilters from '../components/ModelFilters.svelte'
-  import ModelCard from '../components/ModelCard.svelte'
   import BulkActions from '../components/BulkActions.svelte'
+  import ModelCard from '../components/ModelCard.svelte'
+  import ModelFilters from '../components/ModelFilters.svelte'
+  import { ModelService } from '../services'
   import type { Model, ModelFilters as ModelFiltersType, ModelListResponse } from '../types'
 
   let models: Model[] = []
@@ -23,19 +23,21 @@
   async function loadModels() {
     loading = true
     error = ''
-    
+    console.log('Loading models')
+
     try {
       let response: ModelListResponse
-      
+
       if (currentView === 'pending') {
         response = await modelService.getPendingModels(filters.limit, filters.offset)
       } else {
         response = await modelService.getAllModels(filters)
       }
-      
-      models = response.models || []
-      pagination = response.pagination
-      
+      console.log('Response:', response)
+      models = response.data.models || []
+      console.log('Models:', models)
+      pagination = response.data.pagination || { total: 0, limit: 20, offset: 0, hasMore: false }
+
       // Clear selection when loading new data
       selectedModels = []
     } catch (err) {
@@ -88,7 +90,7 @@
     const modelId = event.detail
     const reason = prompt('Please provide a reason for rejection:')
     if (!reason) return
-    
+
     try {
       await modelService.rejectModel(modelId, reason)
       loadModels() // Reload to reflect changes
@@ -101,7 +103,7 @@
     const modelId = event.detail
     const model = models.find(m => m.modelId === modelId)
     if (!model) return
-    
+
     try {
       await modelService.updateModelAvailability(modelId, !model.status.availability)
       loadModels() // Reload to reflect changes
@@ -112,10 +114,10 @@
 
   async function handleBulkAction(event: CustomEvent<any>) {
     const { action, modelIds, data } = event.detail
-    
+
     try {
       loading = true
-      
+
       switch (action) {
         case 'approve':
           await modelService.bulkApprove(modelIds)
@@ -130,7 +132,7 @@
           await modelService.bulkToggleAvailability(modelIds)
           break
       }
-      
+
       loadModels() // Reload to reflect changes
     } catch (err) {
       console.error('Error performing bulk action:', err)
@@ -157,18 +159,19 @@
 
   async function loadModelsMore() {
     loading = true
-    
+
     try {
       let response: ModelListResponse
-      
+
       if (currentView === 'pending') {
         response = await modelService.getPendingModels(filters.limit, filters.offset)
       } else {
         response = await modelService.getAllModels(filters)
       }
-      
-      models = [...models, ...(response.models || [])]
-      pagination = response.pagination
+      console.log('Response:', response)
+      models = [...models, ...(response.data.models || [])]
+      console.log('Models:', models)
+      pagination = response.data.pagination || { total: 0, limit: 20, offset: 0, hasMore: false }
     } catch (err) {
       console.error('Error loading more models:', err)
     } finally {
@@ -181,7 +184,7 @@
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900">Model Management</h1>
     <p class="text-gray-600 mt-2">Approve and manage model profiles</p>
-    
+
     <!-- View Toggle -->
     <div class="mt-4 flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
       <button
@@ -228,8 +231,8 @@
   {/if}
 
   <!-- Bulk Actions -->
-  <BulkActions 
-    {selectedModels} 
+  <BulkActions
+    {selectedModels}
     {loading}
     on:bulk-action={handleBulkAction}
     on:select-all={handleSelectAll}
@@ -249,15 +252,15 @@
         {currentView === 'pending' ? 'No Pending Models' : 'No Models Found'}
       </h3>
       <p class="text-gray-600">
-        {currentView === 'pending' 
-          ? 'All models have been reviewed. Great work!' 
+        {currentView === 'pending'
+          ? 'All models have been reviewed. Great work!'
           : 'No models match your current filters. Try adjusting your search criteria.'}
       </p>
     </div>
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {#each models as model}
-        <ModelCard 
+        <ModelCard
           {model}
           selected={selectedModels.includes(model.modelId)}
           on:select={handleModelSelect}

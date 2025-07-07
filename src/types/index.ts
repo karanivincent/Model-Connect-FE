@@ -12,7 +12,7 @@ export interface User {
 // Model types
 export interface Model {
   modelId: string
-  userId: string
+  userId?: string
   profile: {
     name: string
     bio?: string
@@ -21,38 +21,38 @@ export interface Model {
     photos?: string[]
   }
   contactInfo: {
-    phone: string
+    phone?: string
     price: number
   }
   status: {
     adminApproved: boolean
     availability: boolean
-    consentGiven: boolean
+    consentGiven?: boolean
     rejectionReason?: string
   }
   user: {
-    telegramId: number
+    telegramId?: number
     username?: string
     firstName?: string
     lastName?: string
-    status: string
+    status?: string
   }
-  metrics: {
+  metrics?: {
     salesCount: number
     totalEarnings: number
   }
   timestamps: {
     createdAt: string
-    updatedAt: string
+    updatedAt?: string
     approvalDate?: string
     rejectionDate?: string
     consentDate?: string
   }
   completeness?: {
-    checks: Record<string, boolean>
-    score: number
+    checks?: Record<string, boolean>
+    score?: number
     percentage: number
-    isComplete: boolean
+    isComplete?: boolean
   }
   priority?: number
 }
@@ -86,19 +86,22 @@ export interface ModelFilters {
 }
 
 export interface ModelListResponse {
-  models: Model[]
-  pagination: {
-    total: number
-    limit: number
-    offset: number
-    hasMore: boolean
+  data: {
+    models: Model[]
+    pagination: {
+      total: number
+      limit: number
+      offset: number
+      hasMore: boolean
+    }
+    summary?: {
+      totalPending: number
+      highPriority: number
+      readyForReview: number
+      needsAttention: number
+    }
   }
-  summary?: {
-    totalPending: number
-    highPriority: number
-    readyForReview: number
-    needsAttention: number
-  }
+  success: boolean
 }
 
 export interface ModelDetailResponse {

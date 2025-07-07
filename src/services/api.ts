@@ -1,6 +1,6 @@
 // Base API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api`
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL 
+  ? `${import.meta.env.VITE_BACKEND_URL}/api`
   : '/api'
 
 interface ApiResponse<T> {

@@ -4,6 +4,7 @@
   import ModelCard from '../components/ModelCard.svelte'
   import ModelFilters from '../components/ModelFilters.svelte'
   import { ModelService } from '../services'
+  import { goto } from '$app/navigation'
   import type { Model, ModelFilters as ModelFiltersType, ModelListResponse } from '../types'
 
   let models: Model[] = []
@@ -72,8 +73,7 @@
 
   function handleViewDetails(event: CustomEvent<string>) {
     const modelId = event.detail
-    // TODO: Navigate to model detail page
-    console.log('View details for model:', modelId)
+    goto(`/models/${modelId}`)
   }
 
   async function handleQuickApprove(event: CustomEvent<string>) {

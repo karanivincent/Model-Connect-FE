@@ -4,14 +4,17 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "deploy": "npm run build && vercel deploy --prod",
     "deploy:preview": "npm run build && vercel deploy"
   },
   "devDependencies": {
+    "@sveltejs/adapter-auto": "^6.0.1",
+    "@sveltejs/kit": "^2.22.2",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tsconfig/svelte": "^5.0.0",
     "autoprefixer": "^10.4.16",

@@ -9,10 +9,14 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
     "deploy": "npm run build && vercel deploy --prod",
     "deploy:preview": "npm run build && vercel deploy"
   },
   "devDependencies": {
+    "@playwright/test": "^1.53.2",
     "@sveltejs/adapter-auto": "^6.0.1",
     "@sveltejs/kit": "^2.22.2",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",

@@ -67,7 +67,7 @@
   $: priorityBadge = getPriorityBadge(model.priority)
 </script>
 
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 {selected ? 'ring-2 ring-primary-500 bg-primary-50' : ''}">
+<div data-testid="model-card" class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 {selected ? 'ring-2 ring-primary-500 bg-primary-50' : ''}">
   <!-- Header with selection and priority -->
   <div class="p-4 border-b border-gray-100">
     <div class="flex items-start justify-between">

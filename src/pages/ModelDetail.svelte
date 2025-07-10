@@ -16,6 +16,7 @@
 
   // React to modelId changes
   $: if (modelId) {
+    console.log('ModelDetail: modelId changed to:', modelId)
     loadModelDetail()
     loadTransactions()
   }
@@ -25,7 +26,11 @@
       loading = true
       error = ''
       
+      console.log('ModelDetail: Loading model with ID:', modelId)
       const detailResponse: Model | null = await modelService.getModelById(modelId)
+      console.log('ModelDetail: API response:', detailResponse)
+      console.log('ModelDetail: Response type:', typeof detailResponse)
+      console.log('ModelDetail: Response has modelId?', detailResponse?.modelId)
 
       if (detailResponse && detailResponse.modelId) {
         // The API returns { success: true, data: Model } but we need to create ModelDetailResponse structure
@@ -219,7 +224,7 @@
       <span class="ml-2 text-gray-600">Loading model details...</span>
     </div>
   {:else if error}
-    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+    <div data-testid="error-message" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
       <div class="flex">
         <span class="text-red-400 mr-2">⚠️</span>
         <div>

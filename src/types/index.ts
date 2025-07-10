@@ -104,17 +104,6 @@ export interface ModelListResponse {
   success: boolean
 }
 
-export interface ModelDetailResponse {
-  model: Model
-  analytics: {
-    totalSales: number
-    totalEarnings: number
-    totalPlatformFees: number
-    salesLast30Days: number
-    salesLast7Days: number
-  }
-  transactions: Transaction[]
-}
 
 export interface BulkOperationResponse {
   action: string
@@ -231,4 +220,122 @@ export interface DashboardMetrics {
   totalProducts: number
   pendingApprovals: number
   activeUsers: number
+}
+
+// New API Response Types (Based on Backend Documentation)
+
+// Enhanced Model Detail Response
+export interface ModelDetailResponse {
+  model: Model
+  metrics: {
+    totalSales: number
+    totalEarnings: number
+    averageRating: number
+    conversionRate: number
+    salesLast30Days: number
+    salesLast7Days: number
+    totalPlatformFees: number
+  }
+  photos: string[]
+  user: {
+    id: string
+    phone: string
+    telegramId?: string
+    telegramUsername?: string
+    firstName?: string
+    lastName?: string
+    registeredAt: string
+    isActive: boolean
+  }
+  analytics?: any  // Optional for compatibility
+  transactions?: any  // Optional for compatibility
+}
+
+// Model Search Response
+export interface ModelSearchResponse {
+  models: (Model & { relevanceScore: number })[]
+  pagination: {
+    total: number
+    limit: number
+    offset: number
+    hasMore: boolean
+  }
+  searchInfo: {
+    query: string
+    totalMatches: number
+    searchTime: number
+    suggestions: string[]
+  }
+}
+
+// Model Statistics Response
+export interface ModelStatsResponse {
+  totalModels: number
+  approvedModels: number
+  pendingModels: number
+  rejectedModels: number
+  activeModels: number
+  totalRevenue: number
+  totalTransactions: number
+  conversionRate: number
+  
+  locationStats: Array<{
+    location: string
+    modelCount: number
+    totalSales: number
+    totalRevenue: number
+    avgPrice: number
+  }>
+  
+  specialtyStats: Array<{
+    specialty: string
+    modelCount: number
+    totalSales: number
+    avgPrice: number
+  }>
+  
+  priceRangeStats: Array<{
+    range: string
+    modelCount: number
+    totalSales: number
+    avgPrice: number
+  }>
+  
+  trends: Array<{
+    date: string
+    newModels: number
+    approvedModels: number
+    totalSales: number
+    revenue: number
+  }>
+}
+
+// Model Transaction Response
+export interface ModelTransactionResponse {
+  transactions: Array<{
+    id: string
+    modelId: string
+    buyerId: string
+    amount: number
+    platformFee: number
+    modelEarnings: number
+    status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED'
+    createdAt: string
+    completedAt?: string
+    paymentMethod: string
+    transactionId: string
+  }>
+  pagination: {
+    total: number
+    limit: number
+    offset: number
+    hasMore: boolean
+  }
+  summary: {
+    totalTransactions: number
+    totalRevenue: number
+    totalPlatformFees: number
+    totalModelEarnings: number
+    averageTransactionAmount: number
+  }
 }

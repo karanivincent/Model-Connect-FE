@@ -1,10 +1,10 @@
+import type { BulkOperationResponse, Model, ModelAnalytics, ModelFilters, ModelListResponse, ModelSearchResponse, ModelStatsResponse } from '../types'
 import { apiClient } from './api'
-import type { Model, ModelFilters, ModelListResponse, ModelDetailResponse, BulkOperationResponse, ModelAnalytics, ModelSearchResponse, ModelStatsResponse, ModelTransactionResponse } from '../types'
 
 export class ModelService {
   async getAllModels(filters: ModelFilters = {}): Promise<ModelListResponse> {
     const queryParams = new URLSearchParams()
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         queryParams.append(key, String(value))
@@ -20,7 +20,7 @@ export class ModelService {
     queryParams.append('status', 'pending')
     queryParams.append('limit', String(limit))
     queryParams.append('offset', String(offset))
-    
+
     const response = await apiClient.get<ModelListResponse>(`/admin/models?${queryParams}`)
     return response.success ? response.data || { data: { models: [], pagination: { total: 0, limit, offset, hasMore: false } }, success: true } : { data: { models: [], pagination: { total: 0, limit, offset, hasMore: false } }, success: false }
   }
@@ -29,19 +29,19 @@ export class ModelService {
     console.log('ModelService: Fetching model with ID:', modelId)
     const response = await apiClient.get<any>(`/admin/models/${modelId}`)
     console.log('ModelService: Raw API response:', response)
-    
+
     if (!response.success) {
       console.log('ModelService: API call failed:', response.error)
       return null
     }
-    
+
     if (!response.data) {
       console.log('ModelService: No data in response')
       return null
     }
-    
+
     console.log('ModelService: Response data:', response.data)
-    
+
     // Handle different response structures
     if (response.data.model) {
       console.log('ModelService: Found model in response.data.model')
@@ -49,6 +49,12 @@ export class ModelService {
     } else if (response.data.modelId) {
       console.log('ModelService: Found model directly in response.data')
       return response.data
+    } else if (response.data.data && response.data.data.model) {
+      console.log('ModelService: Found model in response.data.data.model')
+      return response.data.data.model
+    } else if (response.data.data && response.data.data.modelId) {
+      console.log('ModelService: Found model in response.data.data')
+      return response.data.data
     } else {
       console.log('ModelService: Unexpected response structure')
       return null
@@ -56,14 +62,14 @@ export class ModelService {
   }
 
   async approveModel(modelId: string): Promise<boolean> {
-    const response = await apiClient.put(`/admin/models/${modelId}`, { 
-      action: 'approve' 
+    const response = await apiClient.put(`/admin/models/${modelId}`, {
+      action: 'approve'
     })
     return response.success
   }
 
   async rejectModel(modelId: string, reason: string): Promise<boolean> {
-    const response = await apiClient.put(`/admin/models/${modelId}`, { 
+    const response = await apiClient.put(`/admin/models/${modelId}`, {
       action: 'reject',
       data: { reason }
     })
@@ -71,7 +77,7 @@ export class ModelService {
   }
 
   async updateModelAvailability(modelId: string, availability: boolean): Promise<boolean> {
-    const response = await apiClient.put(`/admin/models/${modelId}`, { 
+    const response = await apiClient.put(`/admin/models/${modelId}`, {
       action: 'set_availability',
       data: { availability }
     })
@@ -79,7 +85,7 @@ export class ModelService {
   }
 
   async updateModelPrice(modelId: string, price: number): Promise<boolean> {
-    const response = await apiClient.put(`/admin/models/${modelId}`, { 
+    const response = await apiClient.put(`/admin/models/${modelId}`, {
       action: 'update_price',
       data: { price }
     })
@@ -132,7 +138,7 @@ export class ModelService {
 
   async getModelTransactions(modelId: string, filters: { startDate?: string, endDate?: string, limit?: number, offset?: number } = {}): Promise<any> {
     const queryParams = new URLSearchParams()
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         queryParams.append(key, String(value))
@@ -146,7 +152,7 @@ export class ModelService {
   async searchModels(query: string, filters: ModelFilters = {}): Promise<ModelSearchResponse | null> {
     const queryParams = new URLSearchParams()
     queryParams.append('q', query)
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         queryParams.append(key, String(value))
